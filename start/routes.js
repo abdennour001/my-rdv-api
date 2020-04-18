@@ -7,6 +7,7 @@ const Route = use('Route')
 Route.group(() => {
   Route.get('/', 'AppointmentController.index')
   Route.post('/patient/:id', 'AppointmentController.appoint')
+  Route.get('/patient/:id', 'AppointmentController.showPatientAppointment')
   Route.get('/:id', 'AppointmentController.show')
   Route.put('/:id', 'AppointmentController.update')
   Route.delete('/:id', 'AppointmentController.destroy')

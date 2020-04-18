@@ -36,7 +36,38 @@ class AppointmentController {
         } catch (error) {
             return response.status(404).json({
                 status: 'error',
-                message: 'Patient not found'
+                message: error
+            })
+        }
+    }
+
+
+    /**
+     * Show the appointments of this patient with ( pk='id' ).
+     * 
+     * @method showPatientAppointment
+     * 
+     * @param {Object} request
+     * @param {Object} params
+     * @param {Object} response
+     * 
+     * @return {JSON}
+     */
+    async showPatientAppointment({ request, params, response }) {
+        // try to get the patient
+        try {
+            const patient = await Patient.find(params.id)
+            
+            const data = await patient.appointments().fetch()
+
+            return response.json({
+                status: 'success',
+                data: data,
+            })
+        } catch (error) {
+            return response.status(404).json({
+                status: 'error',
+                message: error
             })
         }
     }
@@ -54,7 +85,10 @@ class AppointmentController {
     async index({ request, response }) {
         return response.json({
             status: 'success',
-            data: await Appointment.all()
+            data: await Appointment
+                .query()
+                .with('patient')
+                .fetch()
         })
     }
 
@@ -75,6 +109,7 @@ class AppointmentController {
 
             const appointment = await Appointment.query()
                 .where('id', params.id)
+                .with('patient')
                 .firstOrFail()
 
                 return response.json({
